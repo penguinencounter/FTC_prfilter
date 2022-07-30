@@ -38,13 +38,13 @@ on:
               EOF
           # Run aforementioned script
           - run: |
-            chmod +x /tmp/filter_script.sh
-            if [ "$(bash /tmp/filter_script.sh)" ]; then
-              changed=true
-              echo YEEAH
-            else
-              echo Nope
-            fi
+              chmod +x /tmp/filter_script.sh
+              if [ "$(bash /tmp/filter_script.sh)" ]; then
+                changed=true
+                echo YEEAH
+              else
+                echo Nope
+              fi
           
           # And write a comment (TODO add checks)
           # - uses: actions/github-script@v6
