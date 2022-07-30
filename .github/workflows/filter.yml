@@ -27,17 +27,18 @@ jobs:
           echo "Granting permissions"
           chmod +x /tmp/detect_diff.sh
       # Run aforementioned script
-      - run: |
+      - name: output
+        run: |
           if [ "$(bash /tmp/detect_diff.sh)" ]; then
             echo "yes"
-            echo "::set-output name=flagged::true"
+            echo "::set-output name=flag::true"
           else
             echo "no"
-            echo "::set-output name=flagged::false"
+            echo "::set-output name=flag::false"
           fi
-        name: output
-      - run: echo ${{ steps.output.outputs }}
-        name: output_debug
+    
+    outputs:
+      flagged: ${{ steps.output.outputs.flag }}
   
   comment:
     runs-on: ubuntu-latest
