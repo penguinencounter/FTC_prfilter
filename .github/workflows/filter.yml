@@ -20,7 +20,7 @@ jobs:
             console.log("hi I exist")
             console.log(context.payload)
             github.rest.issues.createComment({
-              issue_number: context.payload.pullrequest.number,
+              issue_number: context.payload.pull_request.number,
               owner: context.payload.repository.owner,
               repo: context.payload.repository.fullName,
               body: "HEWWO!"
