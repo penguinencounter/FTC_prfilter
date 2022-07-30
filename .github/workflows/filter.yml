@@ -36,6 +36,7 @@ on:
                 fi
               done
               EOF
+          
           # Run aforementioned script
           - run: |
               chmod +x /tmp/filter_script.sh
