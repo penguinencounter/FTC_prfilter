@@ -3,7 +3,7 @@ name: PR filter v1
 # Controls when the workflow will run
 on:
   pull_request:
-    on: [opened, reopened]
+    on: [opened]
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   combined:
@@ -11,7 +11,8 @@ jobs:
     runs-on: ubuntu-latest
 
     # Only apply on testing and official repositories. (this file is inherited by forks, don't run on those)
-    if: github.repository == 'penguinencounter/FTC_prfilter' || github.repository == 'FIRST-Tech-Challenge/FtcRobotController'
+    # if: github.repository == 'penguinencounter/FTC_prfilter' || github.repository == 'FIRST-Tech-Challenge/FtcRobotController'
+    if: github.repository == 'FIRST-Tech-Challenge/FtcRobotController'
 
     steps:
       - uses: actions/checkout@v3
