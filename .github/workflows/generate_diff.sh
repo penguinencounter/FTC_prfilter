@@ -1,4 +1,6 @@
 #! /bin/bash
+# DO NOT RENAME ME!
+
 git for-each-ref --shell --format='%(refname)' refs/remotes/ | while read ref; do
     chopped=$(echo $ref | rev | cut -d "'" -f 2)
     IFS="/"
