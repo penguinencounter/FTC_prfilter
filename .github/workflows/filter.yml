@@ -31,19 +31,19 @@ jobs:
         run: |
           if [ "$(bash /tmp/detect_diff.sh)" ]; then
             echo "yes"
-            echo "::set-output name=flag::true"
+            echo "::set-output name=matched::$(echo 1)"
           else
             echo "no"
-            echo "::set-output name=flag::false"
+            echo "::set-output name=matched::$(echo 0)"
           fi
     
     outputs:
-      flagged: ${{ steps.output.outputs.flag }}
+      flagged: ${{ steps.output.outputs.matched }}
   
   comment:
     runs-on: ubuntu-latest
     needs: [check]
-    if: needs.check.outputs.flagged
+    if: ${{ needs.check.outputs.flagged == 1 }}
     steps:
       # write a comment (todo close PR)
       - uses: actions/github-script@v6
