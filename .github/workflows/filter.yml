@@ -29,8 +29,10 @@ jobs:
       # Run aforementioned script
       - run: |
           if [ "$(bash /tmp/detect_diff.sh)" ]; then
+            echo "yes"
             echo "::set-output name=flagged::true"
           else
+            echo "no"
             echo "::set-output name=flagged::false"
           fi
         name: output
