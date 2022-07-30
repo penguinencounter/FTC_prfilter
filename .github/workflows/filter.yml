@@ -29,27 +29,11 @@ jobs:
       # Run aforementioned script
       - name: output
         run: |
+          token=${{secrets.GITHUB_TOKEN}}
           if [ "$(bash /tmp/detect_diff.sh)" ]; then
-            echo "yes"
-            echo "::set-output name=matched::$(echo 1)"
+            echo "PR matches target criteria"
+            which curl
           else
-            echo "no"
-            echo "::set-output name=matched::$(echo 0)"
+            echo "PR did not match criteria"
           fi
-      
-      - name: write-comment
-        uses: actions/github-script@v6
-        with:
-            github-token: ${{secrets.GITHUB_TOKEN}}
-            script: |
-              console.log(${{ steps.output.outputs }})
-              console.log(context.payload)
-              let built = {
-                issue_number: context.payload.pull_request.number,
-                owner: context.payload.repository.owner.login,
-                repo: context.payload.repository.name,
-                body: "(PR flagged!)"
-              }
-              console.log(built)
-              github.rest.issues.createComment(built)
         
