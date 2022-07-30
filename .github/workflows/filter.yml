@@ -20,6 +20,7 @@ jobs:
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
+            console.log("hi I exist")
             console.log(context.payload)
             github.rest.pullrequests.createComment({
               issueNumber: context.issue.number,
