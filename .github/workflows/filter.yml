@@ -17,32 +17,17 @@ jobs:
       - run: git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
       # Write this script to a temporary file
       - run: |
-          cat << EOF > /tmp/filter_script.sh
-          git for-each-ref --shell --format='%(refname)' refs/remotes/ | while read ref; do
-            chopped=$(echo $ref | rev | cut -d "'" -f 2)
-            IFS="/"
-            choparr=($chopped)
-            unset IFS
-            for i in $choparr; do j=$(echo $i | rev); done  # this is so janky lol
-            case "$j" in
-              main) target="main" ;;
-              master) target="master" ;;
-              *) ;;
-            esac
-            count=${#target}
-            if [[ count -gt 0 ]]; then
-              if [ "$(git diff origin/$target HEAD -- TeamCode)" ]; then
-                echo changed
-              fi
-              break
-            fi
-          done
-          EOF
-      
+          ####  CONFIGURATION  ####
+          script_target="https://raw.githubusercontent.com/penguinencounter/FTC_prfilter/main/.github/workflows/detect_and_diff.sh"
+          #########################
+      - run: |
+          echo "Downloading script from $script_target"
+          wget -O /tmp/detect_diff.sh $script_target
+          echo "Granting permissions"
+          chmod +x /tmp/detect_diff.sh
       # Run aforementioned script
       - run: |
-          chmod +x /tmp/filter_script.sh
-          if [ "$(bash /tmp/filter_script.sh)" ]; then
+          if [ "$(bash /tmp/detect_diff.sh)" ]; then
             changed=true
             echo YEEAH
           else
