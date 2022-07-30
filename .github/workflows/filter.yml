@@ -17,8 +17,13 @@ jobs:
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            console.log("hi I exist")
             console.log(context.payload)
+            console.log({
+              issue_number: context.payload.pull_request.number,
+              owner: context.payload.repository.owner.login,
+              repo: context.payload.repository.fullName,
+              body: "HEWWO!"
+            })
             github.rest.issues.createComment({
               issue_number: context.payload.pull_request.number,
               owner: context.payload.repository.owner.login,
