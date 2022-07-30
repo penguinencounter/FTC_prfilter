@@ -3,53 +3,65 @@ name: PR filter v1
 # Controls when the workflow will run
 on:
   pull_request:
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
-jobs:
-  check:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-      - uses: actions/checkout@v3
-      - run: |
-        cat << EOF > /tmp/filter_script.sh
-        git for-each-ref --shell --format='%(refname)' refs/remotes/ | while read ref; do
-          chopped=$(echo $ref | rev | cut -d "'" -f 2)
-          IFS="/"
-          choparr=($chopped)
-          unset IFS
-          for i in $choparr; do j=$(echo $i | rev); done  # this is so janky lol
-          case "$j" in
-            main) target="main" ;;
-            master) target="master" ;;
-            *) ;;
-          esac
-          count=${#target}
-          if [[ count -gt 0 ]]; then
-            if [$(git diff origin/$target HEAD -- TeamCode)] echo changed;
-            break
-          fi
-        done
-        EOF
-      - run: git diff origin/master HEAD -- TeamCode
+    
+    # A workflow run is made up of one or more jobs that can run sequentially or in parallel
+    jobs:
+      check:
+        # The type of runner that the job will run on
+        runs-on: ubuntu-latest
         
-      # And write a comment (TODO add checks)
-      # - uses: actions/github-script@v6
-      #   with:
-      #     github-token: ${{secrets.GITHUB_TOKEN}}
-      #     script: |
-      #       console.log(context.payload)
-      #       console.log({
-      #         issue_number: context.payload.pull_request.number,
-      #         owner: context.payload.repository.owner.login,
-      #         repo: context.payload.repository.name,
-      #         body: "HEWWO!"
-      #       })
-      #       github.rest.issues.createComment({
-      #         issue_number: context.payload.pull_request.number,
-      #         owner: context.payload.repository.owner.login,
-      #         repo: context.payload.repository.name,
-      #         body: "HEWWO!"
-      #       })
+        # Steps represent a sequence of tasks that will be executed as part of the job
+        steps:
+          - uses: actions/checkout@v3
+          # Write this script to a temporary file
+          - run: |
+              cat << EOF > /tmp/filter_script.sh
+              git for-each-ref --shell --format='%(refname)' refs/remotes/ | while read ref; do
+                chopped=$(echo $ref | rev | cut -d "'" -f 2)
+                IFS="/"
+                choparr=($chopped)
+                unset IFS
+                for i in $choparr; do j=$(echo $i | rev); done  # this is so janky lol
+                case "$j" in
+                  main) target="main" ;;
+                  master) target="master" ;;
+                  *) ;;
+                esac
+                count=${#target}
+                if [[ count -gt 0 ]]; then
+                  if [ "$(git diff origin/$target HEAD -- TeamCode)" ]; then
+                    echo changed
+                  fi
+                  break
+                fi
+              done
+              EOF
+          # Run aforementioned script
+          - run: |
+            chmod +x /tmp/filter_script.sh
+            if [ "$(bash /tmp/filter_script.sh)" ]; then
+              changed=true
+              echo YEEAH
+            else
+              echo Nope
+            fi
+          
+          # And write a comment (TODO add checks)
+          # - uses: actions/github-script@v6
+          #   with:
+            #     github-token: ${{secrets.GITHUB_TOKEN}}
+            #     script: |
+            #       console.log(context.payload)
+            #       console.log({
+            #         issue_number: context.payload.pull_request.number,
+            #         owner: context.payload.repository.owner.login,
+            #         repo: context.payload.repository.name,
+            #         body: "HEWWO!"
+            #       })
+            #       github.rest.issues.createComment({
+            #         issue_number: context.payload.pull_request.number,
+            #         owner: context.payload.repository.owner.login,
+            #         repo: context.payload.repository.name,
+            #         body: "HEWWO!"
+            #       })
+            
