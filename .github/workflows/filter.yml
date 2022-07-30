@@ -50,7 +50,7 @@ jobs:
         with:
             github-token: ${{secrets.GITHUB_TOKEN}}
             script: |
-              console.log(${{ needs.check.outputs() }})
+              console.log(${{ needs.check.outputs }}())
               console.log(context.payload)
               let built = {
                 issue_number: context.payload.pull_request.number,
