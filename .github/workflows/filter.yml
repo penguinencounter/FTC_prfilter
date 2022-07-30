@@ -4,7 +4,7 @@ name: PR filter v1
 on:
   pull_request:
     types: [opened]
-  issue:
+  issues:
     types: [opened]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
