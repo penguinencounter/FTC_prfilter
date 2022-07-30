@@ -20,8 +20,9 @@ jobs:
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            console.log(context)
-            github.rest.issues.createComment({
+            console.log(context.payload)
+            github.rest.pullrequests.createComment({
               issueNumber: context.issue.number,
-              owner: context.repo.owner
+              owner: context.repository.owner,
+              repo: context.repository.fullName
             })
