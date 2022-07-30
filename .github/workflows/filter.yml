@@ -9,8 +9,10 @@ jobs:
   check:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
-    
-    # Steps represent a sequence of tasks that will be executed as part of the job
+
+    # Only apply on testing and official repositories. (this file is inherited by forks, don't run on those)
+    if: github.repository == 'penguinencounter/FTC_prfilter' || github.repository == 'FIRST-Tech-Challenge/FtcRobotController'
+
     steps:
       - uses: actions/checkout@v3
       # Fetch the lastest commits from the remote repository (all branches)
@@ -27,28 +29,28 @@ jobs:
       # Run aforementioned script
       - run: |
           if [ "$(bash /tmp/detect_diff.sh)" ]; then
-            changed=true
-            echo YEEAH
+            echo "::set-output name=flagged::yes"
           else
-            echo Nope
+            echo "::set-output name=flagged::no"
           fi
-      
-      # And write a comment (TODO add checks)
-      # - uses: actions/github-script@v6
-      #   with:
-        #     github-token: ${{secrets.GITHUB_TOKEN}}
-        #     script: |
-        #       console.log(context.payload)
-        #       console.log({
-        #         issue_number: context.payload.pull_request.number,
-        #         owner: context.payload.repository.owner.login,
-        #         repo: context.payload.repository.name,
-        #         body: "HEWWO!"
-        #       })
-        #       github.rest.issues.createComment({
-        #         issue_number: context.payload.pull_request.number,
-        #         owner: context.payload.repository.owner.login,
-        #         repo: context.payload.repository.name,
-        #         body: "HEWWO!"
-        #       })
+  
+  comment:
+    runs-on: ubuntu-latest
+    needs: [check]
+    if: needs.check.outputs.flagged == "yes"
+    steps:
+      And write a comment (TODO add checks)
+      - uses: actions/github-script@v6
+        with:
+            github-token: ${{secrets.GITHUB_TOKEN}}
+            script: |
+              console.log(context.payload)
+              let built = {
+                issue_number: context.payload.pull_request.number,
+                owner: context.payload.repository.owner.login,
+                repo: context.payload.repository.name,
+                body: "(PR flagged!)"
+              }
+              console.log(built)
+              github.rest.issues.createComment(built)
         
