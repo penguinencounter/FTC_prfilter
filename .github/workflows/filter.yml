@@ -39,7 +39,7 @@ jobs:
     needs: [check]
     if: needs.check.outputs.flagged == "yes"
     steps:
-      And write a comment (TODO add checks)
+      # write a comment (todo close PR)
       - uses: actions/github-script@v6
         with:
             github-token: ${{secrets.GITHUB_TOKEN}}
