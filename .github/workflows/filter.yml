@@ -15,12 +15,11 @@ jobs:
       - uses: actions/checkout@v3
       # Fetch the lastest commits from the remote repository (all branches)
       - run: git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
-      # Write this script to a temporary file
       - run: |
-          ####  CONFIGURATION  ####
+          ####  TARGET CONFIGURATION  ####
           script_target="https://raw.githubusercontent.com/penguinencounter/FTC_prfilter/main/.github/workflows/detect_and_diff.sh"
-          #########################
-      - run: |
+          ################################
+
           echo "Downloading script from $script_target"
           wget -O /tmp/detect_diff.sh $script_target
           echo "Granting permissions"
