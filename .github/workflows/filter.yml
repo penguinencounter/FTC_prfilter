@@ -33,6 +33,9 @@ jobs:
           else
             echo "::set-output name=flagged::no"
           fi
+        name: output
+      - run: echo ${{ steps.output.outputs }}
+        name: output_debug
   
   comment:
     runs-on: ubuntu-latest
