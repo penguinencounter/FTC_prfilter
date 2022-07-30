@@ -12,21 +12,24 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+      - uses: actions/checkout@v3
+      - run: git diff origin/master HEAD
+        
       # And write a comment (TODO add checks)
-      - uses: actions/github-script@v6
-        with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
-          script: |
-            console.log(context.payload)
-            console.log({
-              issue_number: context.payload.pull_request.number,
-              owner: context.payload.repository.owner.login,
-              repo: context.payload.repository.name,
-              body: "HEWWO!"
-            })
-            github.rest.issues.createComment({
-              issue_number: context.payload.pull_request.number,
-              owner: context.payload.repository.owner.login,
-              repo: context.payload.repository.name,
-              body: "HEWWO!"
-            })
+      # - uses: actions/github-script@v6
+      #   with:
+      #     github-token: ${{secrets.GITHUB_TOKEN}}
+      #     script: |
+      #       console.log(context.payload)
+      #       console.log({
+      #         issue_number: context.payload.pull_request.number,
+      #         owner: context.payload.repository.owner.login,
+      #         repo: context.payload.repository.name,
+      #         body: "HEWWO!"
+      #       })
+      #       github.rest.issues.createComment({
+      #         issue_number: context.payload.pull_request.number,
+      #         owner: context.payload.repository.owner.login,
+      #         repo: context.payload.repository.name,
+      #         body: "HEWWO!"
+      #       })
