@@ -14,8 +14,24 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: |
-        bash << EOF
-
+        cat << EOF > /tmp/filter_script.sh
+        git for-each-ref --shell --format='%(refname)' refs/remotes/ | while read ref; do
+          chopped=$(echo $ref | rev | cut -d "'" -f 2)
+          IFS="/"
+          choparr=($chopped)
+          unset IFS
+          for i in $choparr; do j=$(echo $i | rev); done  # this is so janky lol
+          case "$j" in
+            main) target="main" ;;
+            master) target="master" ;;
+            *) ;;
+          esac
+          count=${#target}
+          if [[ count -gt 0 ]]; then
+            if [$(git diff origin/$target HEAD -- TeamCode)] echo changed;
+            break
+          fi
+        done
         EOF
       - run: git diff origin/master HEAD -- TeamCode
         

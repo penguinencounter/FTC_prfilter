@@ -8,12 +8,13 @@ git for-each-ref --shell --format='%(refname)' refs/remotes/ | while read ref; d
     case "$j" in
         main) target="main" ;;
         master) target="master" ;;
-        *) echo "$j ain't it" ;;
+        *) ;;
     esac
     count=${#target}
     if [[ count -gt 0 ]]; then
-        echo "diff origin/$target"
-        echo "$(git diff origin/$target HEAD -- TeamCode)"
+        if [ "$(git diff origin/$target HEAD -- TeamCode)" ]; then
+            echo changed
+        fi
         break
     fi
 done
